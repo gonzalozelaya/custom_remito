@@ -209,7 +209,7 @@
          </t>
     </template>
 
-    <template id="stock.report_delivery_remito">
+    <template id="report_delivery_remito">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="o">
                     <t t-set="lang" t-value="o.partner_id.lang"/>
@@ -220,11 +220,11 @@
     
         <!-- Acción para generar el reporte -->
         <record id="action_report_payment_with_withholdings" model="ir.actions.report">
-            <field name="name">Recibo de pago</field>
-            <field name="model">account.payment.multiplemethods</field>
-            <field name="binding_model_id" ref="model_account_payment_multiplemethods"/>
+            <field name="name">Remito</field>
+            <field name="model">stock.picking</field>
+            <field name="binding_model_id" ref="model_stock_picking"/>
             <field name="report_type">qweb-pdf</field>
-            <field name="print_report_name">'Recibo de pago - %s' % (object.name or '')</field>
-            <field name="report_name">account-payment-group.report_payment_with_withholdings</field>
-            <field name="report_file">account-payment-group.report_payment_with_withholdings</field>
+            <field name="print_report_name">'Remito - %s' % (object.name or '')</field>
+            <field name="report_name">custom_remito.report_delivery_remito</field>
+            <field name="report_file">custom_remito.report_delivery_remito</field>
         </record>
