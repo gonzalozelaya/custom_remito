@@ -30,5 +30,10 @@
         'views/templates_header.xml',
         'views/templates_remito.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'custom_remito/static/src/css/style.css',
+        ],
+    },
 
 }
