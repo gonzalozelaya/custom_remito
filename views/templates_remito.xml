@@ -1,8 +1,8 @@
-<t t-name="custom_remito.report_delivery_remito_document">
-            <t t-call="web.html_container">
+<odoo>
+    <data>
+    <template id="report_delivery_remito_document">
+              <t t-call="web.html_container">
                 <t t-call="web.external_layout">
-                    <link rel="stylesheet" type="text/css" href="/custom_remito/static/src/css/style.css"/>
-
                     <t t-set="o" t-value="o.with_context(lang=lang)"/>
                     <t t-set="custom_header" t-value="'custom_remito.stock_remito_header'"/>
                     <t t-set="report_date" t-value="o.date"/>
@@ -14,49 +14,25 @@
                     
                     <t t-set="custom_footer">
                             
-                            <div class="row">
-
+                            <div class="row pt-4">
                                 <div name="footer_left_column" class="col-4">
-                                        <div>
-                                            <div>CAI N° 23123123123123123</div>
-                                            <div>Vencimiento:25 junio 2025</div>
-                                            <div>asdasdw123123sadasd</div>
-                                        </div>
+                                    <span/>
                                 </div>
                                 <div name="footer_left_column" class="col-4">
-                                    
-                                    <div name="footer_right_column" class="col-4">
-                                        <div class="text-right" name="pager" t-if="report_type == 'pdf'">
-                                            Page: <span class="page"/> / <span class="topage"/>
-                                        </div>
+                                    <div>
+                                        <div class="pb-2 text-center">C.A.I. N° <strong>50304208233990</strong></div>
+                                        <div class="pb-2 text-center">Vencimiento: 25-07-2025</div>
+                                        <div class="pb-2 text-center" style="font-size:12px">N° 0006-00021151 -N° 0006-00021350</div>
                                     </div>
                                 </div>
+                                <!--<div name="footer_right_column" class="col-4 test-class">
+                                    <div class="text-right" name="pager" t-if="report_type == 'pdf'">
+                                        Page: <span class="page"/> / <span class="topage"/>
+                                    </div>
+                                </div>-->
                         </div>
                     </t>
-                    
-                    <div class="page">
-                            <div id="informations" class="row mt8 mb8">
-                                <div class="oe_structure">
-                                    <!-- IDENTIFICACION (ADQUIRIENTE-LOCATARIO-PRESTARIO) -->
-            
-                                    <!-- (14) Apellido uy Nombre: Denominicacion o Razon Soclial -->
-                                    <strong><span t-out="'Señor/es: '"/></strong><span t-field="o.partner_id.name"/>
-            
-                                    <!-- (15) Domicilio Comercial -->
-                                    <br/>
-                                    <span t-out="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;no_tag_br&quot;: True}"/>
-            
-                                    <!-- (16) Responsabilidad AFIP -->
-                                    <strong>Sit. IVA: </strong><span t-field="o.partner_id.l10n_ar_afip_responsibility_type_id"/>
-            
-                                    <!-- (17) CUIT -->
-                                    <t t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id.name and o.partner_id.l10n_latam_identification_type_id.name != 'Sigd'">
-                                        <br/><strong><t t-out="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.country_id.vat_label" id="inv_tax_id_label"/>:</strong> <span t-out="o.partner_id.l10n_ar_formatted_vat or o.partner_id.vat"/>
-                                    </t>
-            
-                                </div>
-                            </div>
-                    </div>
+
                     <div class="page">
                         <div class="oe_structure"/>
                         <div class="row mt8 mb8">
@@ -104,25 +80,25 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table class="table table-sm mt48 border rounded " t-elif="o.move_line_ids and o.state=='done'" style="border-color:red;">
+                        <table class="table table-sm mt48 border rounded " t-elif="o.move_line_ids and o.state=='done'">
                             <t t-set="has_serial_number" t-value="False"/>
                             <t t-set="has_serial_number" t-value="o.move_line_ids.mapped('lot_id')" groups="stock.group_lot_on_delivery_slip"/>
-                            <thead class="border rounded" style="border-color:red;">
-                                <tr class="border rounded" style="border-color:red;">
-                                    <th name="th_sml_product" class="border rounded"><strong>Descripción</strong></th>
+                            <thead class="border rounded" t-att-style="'background-color:%s;border:2px solid %s !important;' % (o.company_id.primary_color,o.company_id.primary_color)">
+                                <tr>
+                                    <th name="th_sml_product" t-att-style="'border-right:2px solid %s !important;color:white !important;' % o.company_id.primary_color"><strong>Descripción</strong></th>
                                     <!--<th name="th_sml_qty_ordered" class="text-center" t-if="not has_serial_number">
                                         <strong>Ordenado</strong>
                                     </th>
                                     <th name="lot_serial" t-else="">
                                         N° de serie
                                     </th>-->
-                                    <th name="th_sml_quantity" class="border rounded"><strong>Cantidad</strong></th>
+                                    <th name="th_sml_quantity" style="color:white !important;"><strong>Cantidad</strong></th>
                                 </tr>
                             </thead>
-                            <tbody class="border rounded">
+                            <tbody t-att-style="'border:2px solid %s !important;' % o.company_id.primary_color">
                                 <t t-set="lines" t-value="o.move_ids.filtered(lambda x: x.product_uom_qty)"/>
-                                    <tr t-foreach="lines" t-as="move">
-                                        <td class="border rounded">
+                                    <tr t-foreach="lines" t-as="move" t-att-style="'border-right:2px solid %s !important;' % o.company_id.primary_color">
+                                        <td t-att-style="'border-right:2px solid %s !important;' % o.company_id.primary_color">
                                              <span t-field="move.product_id">Customizable Desk</span>
                                                 <p t-if="move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
                                                     <span t-field="move.description_picking">Description on transfer</span>
@@ -234,19 +210,21 @@
                             </div>
                         </div>-->
                     </div>
-                        <div class="row border rounded">
+                        <div class="text-center pb-2 m0" t-att-style="'background-color: %s;height:10px;margin-bottom:-1px' % o.company_id.primary_color">
+                        </div>
+                        <div class="row" t-att-style="'border:2px solid %s !important;border-radius:0 0 20px 20px !important;' % o.company_id.primary_color">
                             <div name="footer_left_column" class="col-6">
-                                <div class="container">
+                                <div class="container" style="padding-top: 20px !important">
                                     <div class="pt-2 pb-2">Transportista:</div>
                                     <div class="pt-2 pb-2">Domicilio    :</div>
                                     <div class="pt-2 pb-2">CUIT         :</div>
                                 </div>
                             </div>
-                            <div name="footer_right_column" class="col-6">
-                                    <div class="pt-2">
+                            <div name="footer_right_column" class="col-6" t-att-style="'border-left:1px solid %s !important;' % o.company_id.primary_color">
+                                    <div class="p-2" style="padding-bottom:50px !important">
                                         <span>Recibi/mos conforme la mercadería descripta en este remito:</span>
                                     </div>
-                                    <div style="padding-top:70px">
+                                    <div class="p-2">
                                         <span class="text-center">Firma:</span>
                                     </div>
                                     
@@ -255,4 +233,26 @@
 
                 </t>
              </t>
-        </t>
+        </template>
+    
+        <template id="report_delivery_remito">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-set="lang" t-value="o.partner_id.lang"/>
+                        <t t-call="custom_remito.report_delivery_remito_document" t-lang="lang"/>
+                    </t>
+                </t>
+            </template>
+        
+            <!-- Acción para generar el reporte -->
+            <record id="action_custom_remito" model="ir.actions.report">
+                <field name="name">Remito</field>
+                <field name="model">stock.picking</field>
+                <field name="binding_model_id" ref="stock.model_stock_picking"/>
+                <field name="report_type">qweb-pdf</field>
+                <field name="print_report_name">'Remito'</field>
+                <field name="report_name">custom_remito.report_delivery_remito</field>
+                <field name="report_file">custom_remito.report_delivery_remito</field>
+            </record>
+    </data>
+  </odoo>

@@ -1,5 +1,7 @@
-<t t-name="custom_remito.stock_remito_header">
-         <div>
+<odoo>
+    <data>
+        <template id="stock_remito_header">
+           <div>
             <div class="row">
                 <div name="left-upper-side" class="col-6" t-if="not pre_printed_report">
                     <div class="container">
@@ -25,41 +27,85 @@
                         </div>
                     </div>
                 </div>
-                <div name="center-upper" class="col-2 text-center" t-att-style="'color: %s;' % o.company_id.primary_color">
-                    <span style="display: inline-block; text-align: center; line-height: 8px;">
-                        <h1 style="line-height: 35px;">
-                            <strong><span t-out="not pre_printed_report and document_letter or ' '"/></strong>
+                <div name="center-upper" class="col-2 text-center" >
+                    <span style="display: inline-block; line-height: 8px;" >
+                        <h1 t-att-style="'line-height: 35px;width:60px;border:2px solid %s;text-align:center !important;margin:auto !important;' % o.company_id.primary_color" style="">
+                            <strong><span t-out="not pre_printed_report and document_letter or ' '" /></strong>
                         </h1>
-                        <span style="font-size: x-small;" t-out="not pre_printed_report and document_legend or ' '"/>
+                        <span style="font-size: x-small;text-align:center !important;" t-out="not pre_printed_report and document_legend or ' '"/>
                     </span>
                 </div>
-                <div name="right-upper-side" class="col-4 text-end" style="padding-left: 0px;" t-if="not pre_printed_report">
-
+                <div name="right-upper-side" class="col-4 text-end" style="padding-left: 0px;margin-top:10px !important" t-if="not pre_printed_report" >
                     <t t-if="not pre_printed_report">
                         <!-- (7) Numero punto venta - (8) numero de documento -->
-                        <div class="mb-1">
-                            <span t-att-style="'color: %s;' % o.company_id.secondary_color">Nro: </span><span t-out="report_number"/>
+                        <div class="mb-0">
+                            <div class="text-center mb-0" t-att-style="'background-color: %s;margin-bottom:-1px !important;' % o.company_id.primary_color">
+                                <span style="color:white !important;">REMITO</span>
+                            </div>
+                            <div class="text-center" t-att-style="'border:2px solid %s !important;border-radius:0 0 20px 20px !important;' % o.company_id.primary_color">
+                                <span t-att-style="'color: %s;' % o.company_id.secondary_color">Nro: </span><span t-out="report_number"/>
+                            </div>
+                            
                         </div>
                     </t>
-                    <br/>
-
-                    <!-- (9) Fecha -->
-                    <span t-att-style="'color: %s;' % o.company_id.secondary_color">Date: </span><span t-out="report_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
-
-                    <t t-if="not pre_printed_report">
-                        <!-- (5) Condicion de IVA / Responsabilidad -->
-                        <!-- (10) CUIT -->
-                        <br/>
-                        <span t-field="o.company_id.l10n_ar_afip_responsibility_type_id"/><span t-att-style="'color: %s;' % o.company_id.secondary_color">
-                        <br/>
-                        CUIT: </span><span t-field="o.company_id.partner_id.l10n_ar_formatted_vat"/>
-
-                        <!-- (11) IIBB: -->
-                        <!-- (12) Inicio de actividades -->
-                        <br/><span t-att-style="'color: %s;' % o.company_id.secondary_color">IIBB: </span><span t-out="o.company_id.l10n_ar_gross_income_type == 'exempt' and 'Exento' or o.company_id.l10n_ar_gross_income_number"/><span t-att-style="'color: %s;' % o.company_id.secondary_color"> - Activities Start: </span><span t-field="o.company_id.l10n_ar_afip_start_date"/>
-                    </t>
                 </div>
+
+            </div>
+            <div class="row d-flex" style="align-items: stretch;">
+                    <!-- (9) Fecha -->
+                    <div class="col-8" style="height:100% !important;padding-right:10px !important;display: flex !important; flex-direction: column !important;">
+                            <div class="text-center pb-2 m0" t-att-style="'background-color: %s;height:10px;margin-bottom:-1px' % o.company_id.primary_color">
+                            </div>
+                            <div id="informations" class="row mt0 mb8">
+                                <div class="oe_structure mt0"  t-att-style="'border:2px solid %s !important;border-radius:0 0 20px 20px !important;padding:10px;line-height:31px !important;' % o.company_id.primary_color" >
+                                    <!-- IDENTIFICACION (ADQUIRIENTE-LOCATARIO-PRESTARIO) -->
+                                    <!-- (14) Apellido uy Nombre: Denominicacion o Razon Soclial -->
+                                    <strong ><span t-out="'Señor/es: '"/></strong><span t-field="o.partner_id.name"/>
+            
+                                    <!-- (15) Domicilio Comercial -->
+                                    
+                                    <!--<div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>-->
+                                    <br/>
+                                    <span t-out="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;no_tag_br&quot;: True}"/>
+                                    <!--<div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>-->
+                                    <!-- (16) Responsabilidad AFIP -->
+                                    <strong class="test-class">Sit. IVA: </strong><span t-field="o.partner_id.l10n_ar_afip_responsibility_type_id"/>
+            
+                                    <!-- (17) CUIT -->
+                                    <t t-if="o.partner_id.vat and o.partner_id.l10n_latam_identification_type_id.name and o.partner_id.l10n_latam_identification_type_id.name != 'Sigd'">
+                                        
+                                        <!--<div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>-->
+                                        <br/><strong><t t-out="o.partner_id.l10n_latam_identification_type_id.name or o.company_id.country_id.vat_label" id="inv_tax_id_label"/>:</strong> <span t-out="o.partner_id.l10n_ar_formatted_vat or o.partner_id.vat"/>
+                                    </t>
+            
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-4" style="margin-top:-30px !important;display: flex !important; flex-direction: column !important;!important;">
+                         <div class="text-center pb-2" t-att-style="'background-color: %s;height:10px !important;margin-bottom:-1px !important;' % o.company_id.primary_color">
+                        </div>
+                        <div t-att-style="'border:2px solid %s !important;border-radius:0 0 20px 20px !important;padding:7px 10px !important;' % o.company_id.primary_color">
+                            <span t-att-style="'color: %s;' % o.company_id.secondary_color">Fecha: </span><span t-out="report_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+        
+                            <t t-if="not pre_printed_report">
+                                <!-- (5) Condicion de IVA / Responsabilidad -->
+                                <!-- (10) CUIT -->
+                                <div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>
+                                <span  t-field="o.company_id.l10n_ar_afip_responsibility_type_id"/><span t-att-style="'color: %s;' % o.company_id.secondary_color">
+                                <div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>
+                                CUIT: </span><span t-field="o.company_id.partner_id.l10n_ar_formatted_vat"/>
+                                <div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>
+                                <!-- (11) IIBB: -->
+                                <!-- (12) Inicio de actividades -->
+                                <span t-att-style="'color: %s;' % o.company_id.secondary_color">IIBB: </span><span t-out="o.company_id.l10n_ar_gross_income_type == 'exempt' and 'Exento' or o.company_id.l10n_ar_gross_income_number"/><span t-att-style="'color: %s;' % o.company_id.secondary_color"> 
+                                <div class="text-center m-1" t-att-style="'background-color: %s;height:1px !important;' % o.company_id.primary_color"></div>
+                                Inicio de actividades: </span><span t-field="o.company_id.l10n_ar_afip_start_date"/>
+                            </t>
+                        </div>
+                    </div>
+
             </div>
         </div>
-
-</t>
+    </template>
+</data>
+</odoo>
